@@ -1,19 +1,46 @@
-console.log('hello hello');
+function showIframe(t) {
+  return t.popup({
+    title: 'Authorize to continue',
+    url: './authorize.html'
+  });
+}
+
+function showMenu(t) {
+  return t.popup({
+    title: 'Do something cool',
+    items: [
+      // …
+    ]
+  });
+}
 
 window.TrelloPowerUp.initialize({
+  "card-buttons": function(t) {
+    return t.getRestApi()
+      .isAuthorized()
+      .then(function(isAuthorized) {
+        if (isAuthorized) {
+          return [{
+            text: 'David\'s Power-Up',
+            callback: showMenu
+          }];
+        } else {
+          return [{
+            text: 'David\'s Power-Up',
+            callback: showIframe
+          }];
+        }
+      })
+      .catch(TrelloPowerUp.restApiError.AuthDeniedError, function() {
+        alert('Cancelled!');
+      });
+  },
   "card-badges": function (t, opts) {
     let cardAttachments = opts.attachments; // Trello passes you the attachments on the card
 
-    t.card("all").then(function (card) {
-      console.log(JSON.stringify(card, null, 2));
-    });
-
-    t.getRestApi()
-      // We now have an instance of the API client.
-      .isAuthorized()
-      .then(function(isAuthorized) {
-        console.log('IS Authorized: ', isAuthorized);
-      })
+    // t.card("all").then(function (card) {
+    //   console.log(JSON.stringify(card, null, 2));
+    // });
 
     return t
       .card("name")
@@ -22,12 +49,7 @@ window.TrelloPowerUp.initialize({
         console.log("We just loaded the card name for fun: " + cardName);
         return [
           {
-            // Dynamic badges can have their function rerun
-            // after a set number of seconds defined by refresh.
-            // Minimum of 10 seconds.
             dynamic: function () {
-              // we could also return a Promise that resolves to
-              // this as well if we needed to do something async first
               return {
                 text: "Dynamic " + (Math.random() * 100).toFixed(0).toString(),
                 color: "green",
@@ -36,16 +58,10 @@ window.TrelloPowerUp.initialize({
             },
           },
           {
-            // It's best to use static badges unless you need your
-            // badges to refresh.
-            // You can mix and match between static and dynamic
             text: "Static",
             color: null,
           },
         ];
       });
   },
-}, {
-  appKey: 'd26f90d692b09eaa03aec3c2373d4dd8',
-    appName: 'Better Time in Status'
 });
