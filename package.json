@@ -4,9 +4,13 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "build": "parcel build src/html/*.html"
+    "build": "parcel build src/html/*.html",
+    "dev": "parcel serve src/html/index.html"
   },
   "devDependencies": {
     "parcel-bundler": "^1.12.5"
+  },
+  "dependencies": {
+    "moment": "^2.29.1"
   }
 }
