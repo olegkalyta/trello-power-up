@@ -8,6 +8,13 @@ window.TrelloPowerUp.initialize({
       console.log(JSON.stringify(card, null, 2));
     });
 
+    t.getRestApi()
+      // We now have an instance of the API client.
+      .isAuthorized()
+      .then(function(isAuthorized) {
+        console.log('IS Authorized: ', isAuthorized);
+      })
+
     return t
       .card("name")
       .get("name")
@@ -38,4 +45,7 @@ window.TrelloPowerUp.initialize({
         ];
       });
   },
+}, {
+  appKey: 'd26f90d692b09eaa03aec3c2373d4dd8',
+    appName: 'Better Time in Status'
 });
