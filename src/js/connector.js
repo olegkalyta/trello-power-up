@@ -64,4 +64,7 @@ window.TrelloPowerUp.initialize({
         ];
       });
   },
+}, {
+  appKey: 'd26f90d692b09eaa03aec3c2373d4dd8',
+  appName: 'Better Time in Status'
 });
