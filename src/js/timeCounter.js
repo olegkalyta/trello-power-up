@@ -22,7 +22,13 @@ export default (actions, card, lists) => {
     return [`${lists[idList].name} - ${daysFromNow(startDate)}`]
   }
 
-  const sortedByDate = actions.sort((a, b) => {
+  // console.log(name, id)
+
+  // if (name !== 'Change the logic for Projected') {
+  //   return
+  // }
+
+  const sortedByDate = actions.filter(a => a.data && a.data.listBefore).sort((a, b) => {
     const dateA = new Date(a.date)
     const dateB = new Date(b.date)
 
@@ -30,15 +36,11 @@ export default (actions, card, lists) => {
   })
 
 
-  // if (id !== '5e9e582c120fb42345f9a7ac') {
-  //   return
-  // }
-
-  // console.log(name, id)
 
   const listsAndTime = { ...lists }
 
   sortedByDate.map((action, index) => {
+    console.log(action)
     if (index === 0) {
       listsAndTime[action.data.listBefore.id] = { ...listsAndTime[action.data.listBefore.id], duration: daysBetweenDates(startDate, action.date) }
     } else {
@@ -51,7 +53,7 @@ export default (actions, card, lists) => {
     // count how much time since last update card is in current (last) status
     if (index + 1 === sortedByDate.length) {
       const lastAction = sortedByDate[index]
-
+      console.log(listsAndTime[lastAction.data.listAfter.id], daysFromNow(lastAction.date))
       listsAndTime[lastAction.data.listAfter.id] = { ...listsAndTime[lastAction.data.listAfter.id],
         duration: (listsAndTime[lastAction.data.listAfter.id].duration || 0) + daysFromNow(lastAction.date) }
     }
@@ -66,6 +68,8 @@ export default (actions, card, lists) => {
         res.push(`${listsAndTime[key].name} - ${listsAndTime[key].duration}`)
       }
   })
+
+  console.log(res)
 
   return res
 

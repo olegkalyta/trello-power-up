@@ -6,6 +6,8 @@ const appKey = 'd26f90d692b09eaa03aec3c2373d4dd8'
 let token = null
 let lists = {}
 
+let counter = 1
+
 function getToken(t) {
   if (token) {
     return Promise.resolve(token)
@@ -38,6 +40,23 @@ function fetchLists(t, boardId) {
 })
 }
 
+function badgesHandler(t) {
+  return t
+    .card("all")
+    .then(function (card) {
+      return delay(500).then(() => {
+        return getToken(t).then(tt => {
+          return countTimeInStatus(tt, card).then(res => {
+            if (res) {
+              return res.map(r => ({ text: r, color: 'yellow' }))
+            }
+            return [];
+          })
+        });
+      });
+    });
+}
+
 window.TrelloPowerUp.initialize({
   'board-buttons': function(t, options) {
     t.board('id')
@@ -51,12 +70,16 @@ window.TrelloPowerUp.initialize({
       })
   },
   "card-buttons": cardButtonsHandler,
-  "card-badges": function (t, opts) {
+  "card-badges": function (t) {
+    counter++
+
+    const delaySuffix = Math.round(counter / 10) * 1000
+    // console.log(delaySuffix)
 
     return t
       .card("all")
       .then(function (card) {
-        return delay(500).then(() => {
+        return delay(1300 + delaySuffix).then(() => {
           return getToken(t).then(tt => {
             return countTimeInStatus(tt, card).then(res => {
               if (res) {
@@ -68,7 +91,7 @@ window.TrelloPowerUp.initialize({
         });
       });
   },
-
+  "card-detail-badges": badgesHandler
 }, {
   appKey: appKey,
   appName: 'Better Time in Status'
