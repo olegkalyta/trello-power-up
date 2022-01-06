@@ -1,22 +1,10 @@
-import moment from "moment";
+import { daysBetweenDates, daysFromNow } from './common'
 
-
-function daysFromNow(strDate) {
-  const startDate = moment(strDate)
-  const now = moment()
-  return now.diff(startDate, 'days')
-}
-
-function daysBetweenDates(startDateStr, endDateStr) {
-  const startDate = moment(startDateStr)
-  const endDate = moment(endDateStr)
-  return endDate.diff(startDate, 'days')
-}
 
 export default (actions, card, lists) => {
-  const { idList, name, id } = card
+  const { idList,  id } = card
 
-  const startDate = new Date(1000*parseInt(card.id.substring(0,8),16))
+  const startDate = new Date(1000*parseInt(id.substring(0,8),16))
 
   if (actions.length === 0) {
     return [`${lists[idList].name} - ${daysFromNow(startDate)}`]
@@ -40,7 +28,7 @@ export default (actions, card, lists) => {
   const listsAndTime = { ...lists }
 
   sortedByDate.map((action, index) => {
-    console.log(action)
+    // console.log(action)
     if (index === 0) {
       listsAndTime[action.data.listBefore.id] = { ...listsAndTime[action.data.listBefore.id], duration: daysBetweenDates(startDate, action.date) }
     } else {
@@ -53,7 +41,6 @@ export default (actions, card, lists) => {
     // count how much time since last update card is in current (last) status
     if (index + 1 === sortedByDate.length) {
       const lastAction = sortedByDate[index]
-      console.log(listsAndTime[lastAction.data.listAfter.id], daysFromNow(lastAction.date))
       listsAndTime[lastAction.data.listAfter.id] = { ...listsAndTime[lastAction.data.listAfter.id],
         duration: (listsAndTime[lastAction.data.listAfter.id].duration || 0) + daysFromNow(lastAction.date) }
     }
@@ -68,8 +55,6 @@ export default (actions, card, lists) => {
         res.push(`${listsAndTime[key].name} - ${listsAndTime[key].duration}`)
       }
   })
-
-  console.log(res)
 
   return res
 

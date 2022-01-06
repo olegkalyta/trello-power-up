@@ -1,3 +1,18 @@
+import moment from "moment";
+
+
+export function daysFromNow(strDate) {
+  const startDate = moment(strDate)
+  const now = moment()
+  return now.diff(startDate, 'days')
+}
+
+export function daysBetweenDates(startDateStr, endDateStr) {
+  const startDate = moment(startDateStr)
+  const endDate = moment(endDateStr)
+  return endDate.diff(startDate, 'days')
+}
+
 const showIframe = t => {
   return t.popup({
     title: 'Authorize to continue',
