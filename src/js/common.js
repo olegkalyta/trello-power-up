@@ -13,6 +13,14 @@ export function daysBetweenDates(startDateStr, endDateStr) {
   return endDate.diff(startDate, 'days')
 }
 
+export const chunk = (arr, chunkSize) => {
+  if (chunkSize <= 0) throw "Invalid chunk size";
+  let R = [];
+  for (let i=0,len=arr.length; i<len; i+=chunkSize)
+    R.push(arr.slice(i,i+chunkSize));
+  return R;
+}
+
 const showIframe = t => {
   return t.popup({
     title: 'Authorize to continue',

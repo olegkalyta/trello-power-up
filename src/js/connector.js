@@ -16,7 +16,10 @@ window.TrelloPowerUp.initialize({
           .then(function (board) {
 
             f.addTasks(card, board.id, t)
-            return Promise.resolve([])
+            return f.getCard(card.id).then(texts => {
+              return texts.map(t => ({ text: t, color: null }))
+            })
+              .catch(() => [])
           });
       })
   },
